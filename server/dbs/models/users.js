@@ -15,5 +15,4 @@ const UserSchema=new Schema({
     require:true
   }
 })
-
 export default mongoose.model('User',UserSchema)
