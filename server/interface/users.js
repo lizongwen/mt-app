@@ -5,15 +5,14 @@ import User from '../dbs/models/users'
 import Passport from './utils/passport'
 import Email from '../dbs/config'
 import axios from './utils/axios'
-import consolaGlobalInstance from 'consola';
-
 
 let router = new Router({ prefix: '/users' })
+
 let Store = new Redis().client
 
 router.post('/signup', async (ctx) => {
 	const { username, password, email, code } = ctx.request.body;
-	//验证验证码
+
 	if (code) {
 		const saveCode = await Store.hget(`nodemail:${username}`, 'code')
 		const saveExpire = await Store.hget(`nodemail:${username}`, 'expire')
@@ -45,9 +44,7 @@ router.post('/signup', async (ctx) => {
 		}
 		return
 	}
-	//注册
 	let nuser = await User.create({ username, password, email })
-	//注册成功后的操作
 	if (nuser) {
 		let res = await axios.post('/users/signin', { username, password })
 		if (res.data && res.data.code === 0) {
@@ -72,7 +69,6 @@ router.post('/signup', async (ctx) => {
 
 router.post('/signin', async (ctx, next) => {
 	return Passport.authenticate('local', function (err, user, info, status) {
-		console.log(5555,err, user, info, status)
 		if (err) {
 			ctx.body = {
 				code: -1,
@@ -96,7 +92,6 @@ router.post('/signin', async (ctx, next) => {
 	})(ctx, next)
 })
 
-//获取验证码
 router.post('/verify', async (ctx, next) => {
 	let username = ctx.request.body.username
 	const saveExpire = await Store.hget(`nodemail:${username}`, 'expire')
@@ -124,7 +119,7 @@ router.post('/verify', async (ctx, next) => {
 		from: `"认证邮件" <${Email.smtp.user}>`,
 		to: ko.email,
 		subject: '《慕课网高仿美团网全栈实战》注册码',
-		html: `您在《慕课网高仿美团网全栈实战》课程中注册，您的邀请码是<div style="font-size:40px;color:#000">${ko.code}</div>`
+		html: `您在《慕课网高仿美团网全栈实战》课程中注册，您的邀请码是${ko.code}`
 	}
 	await transporter.sendMail(mailOptions, (error, info) => {
 		if (error) {

@@ -148,7 +148,7 @@ export default {
             }
           });
       }
-    },
+	},
     register: function() {
       let self = this;
       this.$refs["ruleForm"].validate(valid => {
@@ -161,18 +161,18 @@ export default {
               code: self.ruleForm.code
             })
             .then(({ status, data }) => {
-            //   if (status === 200) {
-            //     if (data && data.code === 0) {
-            //       location.href = "/login";
-            //     } else {
-            //       self.error = data.msg;
-            //     }
-            //   } else {
-            //     self.error = `服务器出错，错误码:${status}`;
-            //   }
-            //   setTimeout(function() {
-            //     self.error = "";
-            //   }, 1500);
+              if (status === 200) {
+                if (data && data.code === 0) {
+                  location.href = "/";
+                } else {
+                  self.error = data.msg;
+                }
+              } else {
+                self.error = `服务器出错，错误码:${status}`;
+              }
+              setTimeout(function() {
+                self.error = "";
+              }, 1500);
             });
         }
       });

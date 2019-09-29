@@ -7,7 +7,6 @@ import mongoose from 'mongoose'
 import bodyParser from 'koa-bodyparser'
 import session from 'koa-generic-session'
 import Redis from 'koa-redis'
-import json from 'koa-json'
 import dbConfig from './dbs/config'
 import passport from './interface/utils/passport'
 import users from './interface/users'
@@ -28,7 +27,6 @@ app.use(session({
 app.use(bodyParser({
 	extendTypes: ['json', 'form', 'text']
 }))
-app.use(json())
 mongoose.connect(dbConfig.dbs, {
 	useNewUrlParser: true
 })
@@ -38,7 +36,6 @@ app.use(passport.session())
 async function start() {
 	// Instantiate nuxt.js
 	const nuxt = new Nuxt(config)
-	console.log('app端口',process.env.PORT)
 	const {
 		host = process.env.HOST || '127.0.0.1',
 		port = process.env.PORT || 3000
@@ -60,7 +57,6 @@ async function start() {
 		ctx.req.ctx = ctx // This might be useful later on, e.g. in nuxtServerInit or with nuxt-stash
 		nuxt.render(ctx.req, ctx.res)
 	})
-	console.log(port)
 	app.listen(port, host)
 	consola.ready({
 		message: `Server listening on http://${host}:${port}`,
